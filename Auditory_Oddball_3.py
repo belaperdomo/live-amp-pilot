@@ -22,7 +22,10 @@ marker_std = 0
 marker_dev = 1
 
 # Iterations that the oddball sound will be played
-special_indices = [5, 11, 20, 23, 31, 37, 48, 53, 62, 73, 79, 88, 92]
+special_indices = [4, 9, 14, 19, 24, 28, 33, 38, 43, 48,
+                   53, 57, 62, 67, 72, 76, 81, 86, 91, 96,
+                   101, 106, 111, 116, 121, 126, 131, 136, 141, 146,
+                   151, 156, 161, 166, 171, 176, 181, 186, 191, 196]
 
 input("Press Enter to continue...")
 

@@ -22,11 +22,14 @@ marker_std = 0
 marker_dev = 1
 
 # Iterations that the oddball sound will be played
-special_indices = [5, 11, 20, 23, 31, 37, 48, 53, 62, 73, 79, 88, 92]
+special_indices = [3, 8, 15, 22, 29, 34, 41, 47, 52, 58,
+                   63, 69, 74, 78, 83, 89, 94, 99, 105, 110,
+                   115, 121, 126, 132, 137, 143, 148, 153, 159, 164,
+                   169, 175, 177, 180, 185, 191, 194, 196, 201, 206]
 
 input("Press Enter to continue...")
 
-for i in range(1, 101):
+for i in range(1, 201):
     isi = 1.5 + (random.randint(1, 9) / float(10)) # Interstimulus interval
     b = isi - 0.6
 
