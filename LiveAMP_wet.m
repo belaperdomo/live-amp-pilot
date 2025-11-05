@@ -1,12 +1,14 @@
 %clc; clear; close all;
 %eeglab
 
-EEG = pop_loadxdf('C:\Users\belab\OneDrive - Florida Institute of Technology\Documents\Florida Tech\0_NeuroLab\LiveAmp_pilot_study\live-amp-pilot\data\sub-P003\ses-S001\eeg\P003-S001-R001.xdf' , 'streamtype', 'EEG', 'exclude_markerstreams', {});
-EEG.setname='03_dry_orig';
+a=1;
+
+EEG = pop_loadxdf('C:\Users\belab\OneDrive - Florida Institute of Technology\Documents\Florida Tech\0_NeuroLab\LiveAmp_pilot_study\live-amp-pilot\data\sub-P006\ses-S002\eeg\P006-S002-R001.xdf' , 'streamtype', 'EEG', 'exclude_markerstreams', {});
+EEG.setname='06_wet_orig';
 EEG.chanlocs(9:11) = [];
 EEG.data(9:11,:) = [];
 EEG.nbchan = [8];
-folderpath = 'C:\Users\belab\OneDrive - Florida Institute of Technology\Documents\Florida Tech\0_NeuroLab\LiveAmp_pilot_study\live-amp-pilot\data\sub-P003\P003-data';
+folderpath = 'C:\Users\belab\OneDrive - Florida Institute of Technology\Documents\Florida Tech\0_NeuroLab\LiveAmp_pilot_study\live-amp-pilot\data\sub-P006\P006-data';
 files = dir(folderpath);
 
 %Change Event Times
@@ -26,7 +28,7 @@ EEG = pop_saveset( EEG, 'filename',EEG.setname,'filepath',char(folderpath));
 
 %Downsample
 EEG = pop_resample( EEG, 250);
-EEG.setname = '03_dry_ds';
+EEG.setname = '06_wet_ds';
 EEG = pop_saveset( EEG, 'filename',EEG.setname,'filepath',char(folderpath));
 
 %Rereference
@@ -38,7 +40,7 @@ filter_out = filter_fcn(tmp,EEG.srate,0.1,50);
 EEG.data = filter_out';
 
 %Save final before Adaptive
-EEG.setname = '03_dry_filt';
+EEG.setname = '06_wet_filt';
 EEG = pop_saveset( EEG, 'filename',EEG.setname,'filepath',char(folderpath));
 
 %Run adaptive filter
@@ -53,7 +55,7 @@ ffact=0.999;
 EEG.data = NC.data';
 
 %Save after adaptive filter
-EEG.setname = '03_dry_adaptive';
+EEG.setname = '06_wet_adaptive';
 EEG = pop_saveset( EEG, 'filename',EEG.setname,'filepath',char(folderpath));
 
 %Filter again
@@ -61,6 +63,7 @@ tmp = double(EEG.data');
 filter_out = filter_fcn(tmp,EEG.srate,1,10);
 EEG.data = filter_out';
 
+a=1;
 %Epoch it now manualy using EEGLAB
 
 %For saving the data
@@ -70,11 +73,32 @@ eventlist = {EEG.event.type};
 event = string(0);
 eventloc = find(strcmp(eventlist,event));
 tmp(:,:,1) = mean(EEG.data(:,:,eventloc),3);
+
+
 event = string(1);
 eventloc = find(strcmp(eventlist,event));
 tmp(:,:,2) = mean(EEG.data(:,:,eventloc),3);
 
-save('C:\Users\belab\OneDrive - Florida Institute of Technology\Documents\Florida Tech\0_NeuroLab\LiveAmp_pilot_study\live-amp-pilot\data\sub-P003\P003-data\dry_ERP5.mat','tmp')
+% plot fz electrode
+chan = 'Fp1';
+chanlist = {EEG.chanlocs(:).labels};
+chanloc = find(strcmp(chanlist, chan));
+
+% Plotting ERP
+figure;
+clf;
+plot(EEG.times, tmp(chanloc, :, 1), 'b', 'linewidth', 1.5); % 0 for standard
+hold on;
+plot(EEG.times, tmp(chanloc, :, 2), 'r', 'linewidth', 1.5); % 1 for deviant
+legend("Standard", 'Deviant');
+xlabel('Time (ms)');
+ylabel('Amplitude (\muV)');
+title(['ERP Channel ' chan]);
+xlim([-100 1000]);
+grid on;
+set(gca, 'fintsize', 12);
+
+%save('C:\Users\belab\OneDrive - Florida Institute of Technology\Documents\Florida Tech\0_NeuroLab\LiveAmp_pilot_study\live-amp-pilot\data\sub-P003\P003-data\dry_ERP5.mat','tmp')
 
 %{
 rows for easy cap (wet) = 4,32,26,21,15,16,5,3
